@@ -1,0 +1,11 @@
+html, body {
+    padding: 20px;
+    background-color: rgb(28, 68, 70);
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    font-size: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+}
