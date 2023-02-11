@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, HydratedDocument, Types } from 'mongoose';
 
+export type PokemonDocument = Document<Types.ObjectId, any, Pokemon> & Pokemon;
 @Schema()
-export class Pokemon extends Document {
+export class Pokemon {
     
     @Prop({
         unique: true,

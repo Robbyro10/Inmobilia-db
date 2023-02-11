@@ -1,17 +1,24 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
 import { isValidObjectId, Model } from 'mongoose';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
-import { Pokemon } from './entities/pokemon.entity';
+import { Pokemon, PokemonDocument } from './entities/pokemon.entity';
 
 @Injectable()
 export class PokemonService {
 
+  private defaultLimit: number;
+
   constructor(
     @InjectModel( Pokemon.name )
-    private readonly pokemonModel: Model<Pokemon>
-  ) {}
+    private readonly pokemonModel: Model<PokemonDocument>,
+    private readonly configService: ConfigService,
+  ) {
+    this.defaultLimit = configService.get<number>('defaultLimit');
+  }
 
   async create(createPokemonDto: CreatePokemonDto) {
     createPokemonDto.name = createPokemonDto.name.toLocaleLowerCase();
@@ -26,14 +33,15 @@ export class PokemonService {
 
   }
 
-  async findAll() {
-    const pokemons = await this.pokemonModel.find();
+  async findAll(paginationDto: PaginationDto ) {
+    const { limit = this.defaultLimit, offset = 0 } = paginationDto;
+    const pokemons = await this.pokemonModel.find().limit( limit ).skip(offset).sort({number: 1})
     if (pokemons.length === 0) throw new NotFoundException('Could not find any pokemons');
     return pokemons;
   }
 
   async findOne( term: string ) {
-    let pokemon: Pokemon;
+    let pokemon: PokemonDocument;
 
     if ( !isNaN( +term ) ) {
       pokemon = await this.pokemonModel.findOne({ number: term });
@@ -50,7 +58,7 @@ export class PokemonService {
     }
 
     if (!pokemon) throw new NotFoundException(`Could not find Pokemon with term: ${term}`);
-    return pokemon
+    return pokemon;
   }
 
   async update( term: string, updatePokemonDto: UpdatePokemonDto ) {
@@ -59,8 +67,9 @@ export class PokemonService {
       updatePokemonDto.name = updatePokemonDto.name.toLowerCase();
     
     try {
+
       await pokemon.updateOne( updatePokemonDto );
-      return { ...pokemon.toJSON(), ...updatePokemonDto };
+      return updatePokemonDto;
       
     } catch (error) {
       this.handleExceptions(error);
@@ -86,5 +95,13 @@ export class PokemonService {
     }
     console.log(error);
     throw new InternalServerErrorException(`Can't create Pokemon - Check server logs`);
+  }
+
+  async clearDB() {
+    await this.pokemonModel.deleteMany({});
+  }
+
+  async fillDB( pokemonToInsert: Pokemon[] ) {
+    await this.pokemonModel.insertMany(pokemonToInsert)
   }
 }
