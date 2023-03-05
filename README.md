@@ -24,11 +24,6 @@ docker-compose up -d
 
 6. Run application with ```yarn start:dev```
 
-7. Rebuild database with seed
-```
-http://localhost:3000/api/v2/seed/
-```
-
 ## Used Stack
 * MongoDB
 * Nest
