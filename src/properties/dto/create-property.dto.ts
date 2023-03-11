@@ -43,7 +43,7 @@ export class CreatePropertyDto {
 
     @IsInt()
     @IsOptional()
-    terrain: number;
+    terrain?: number;
 
     @IsString()
     @IsOptional()

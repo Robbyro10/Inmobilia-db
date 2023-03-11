@@ -7,6 +7,7 @@ import { EnvConfiguration } from './config/env.config';
 import { JoiValidationSchema } from './config/joi.validation';
 import { PropertiesModule } from './properties/properties.module';
 import { AuthModule } from './auth/auth.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
     MongooseModule.forRoot(process.env.MONGODB),
     PropertiesModule,
     AuthModule,
+    SeedModule,
   ],
 })
 export class AppModule {}

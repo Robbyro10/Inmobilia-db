@@ -73,6 +73,11 @@ export class PropertiesService {
     return result;
   }
 
+  async removeAll() {
+    await this.propertyModel.deleteMany({});
+    return 'Properties deleted successfully'
+  }
+
   private handleExceptions( error: any ) {
     if (error.code === 11000) {
       throw new BadRequestException(`property exists in db: ${JSON.stringify(error.keyValue)}`)

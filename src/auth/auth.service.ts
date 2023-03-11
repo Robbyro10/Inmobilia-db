@@ -54,6 +54,11 @@ export class AuthService {
     }
   }
 
+  async removeAll() {
+    await this.userModel.deleteMany({});
+    return 'Users deleted successfully'
+  }
+
   private getJwtToken( payload: JwtPayload ) {
     const token = this.jwtService.sign(payload);
     return token;

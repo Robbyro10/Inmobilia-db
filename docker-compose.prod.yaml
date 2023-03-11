@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  inmobiliaapp:
+    depends_on:
+      - db
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: inmobilia-docker
+    container_name: inmobiliaapp
+    restart: always # reiniciar el contenedor si se detiene
+    ports:
+      - "${PORT}:${PORT}"
+    # working_dir: /var/www/inmobilia
+    environment:
+      MONGODB: ${MONGODB}
+      PORT: ${PORT}
+      DEFAULT_LIMIT: ${DEFAULT_LIMIT}
+    # volumes:
+    #   - ./:/var/www/inmobilia
+
+  db:
+    image: mongo:5
+    container_name: mongo-inmobilia
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGODB_DATABASE: nest-inmobilia
+    # volumes:
+    #   - ./mongo:/data/db
