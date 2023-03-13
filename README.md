@@ -24,6 +24,8 @@ docker-compose up -d
 
 6. Run application with ```yarn start:dev```
 
+7. To run seed, set environment variable NODE_ENV to 'development'
+
 ## Used Stack
 * MongoDB
 * Nest
