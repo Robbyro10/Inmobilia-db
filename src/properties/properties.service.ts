@@ -26,8 +26,9 @@ export class PropertiesService {
   }
 
   async findAll() {
-    const properties = await this.propertyModel.find();
+    let properties = await this.propertyModel.find();
     if (properties.length === 0) throw new NotFoundException('Could not find any properties');
+    properties.reverse();
     return properties;
   }
 
